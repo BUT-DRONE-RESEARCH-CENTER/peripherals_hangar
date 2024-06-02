@@ -64,12 +64,29 @@ def read_sensor_sht25():
     return c_temp, humidity
 
 
+def adjust_temp(temp):
+    """
+    evaluates the best action to take based on inside hangar temp
+    serves as a logical unit for the voltage supplied to peltier modules
+    :param temp: temperature inside hangar IN CELSIUS
+    :return:
+    """
+    temp_threshold_max = 35
+    temp_threshold_min = 5
+    if temp > temp_threshold_max:
+        pass
+    elif temp < temp_threshold_min:
+        pass
+    # TODO: consider increasing measurement frequency if threshold not met
+
+
 while True:
     print(f"Waiting for {measurement_interval}...")
     time.sleep(measurement_interval)
-    print("Measuring")
+    print("Measuring...")
     temp_30, hum_30 = read_sensor_sht30()
     temp_25, hum_25 = read_sensor_sht25()
     # console output
     print(f"SHT30: Temp: {temp_30:.2f}°C Hum: {hum_30:.2f}%\n"
           f"SHT25: Temp: {temp_25:.2f}°C Hum: {hum_25:.2f}%\n")
+    adjust_temp(temp_25)
