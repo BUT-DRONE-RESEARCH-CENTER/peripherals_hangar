@@ -6,14 +6,13 @@ bus = smbus2.SMBus(1)  # For Raspberry Pi 1 or 2, use 0 instead of 1
 time.sleep(1)
 address_30 = 0x44  # SHT sensor address (7-bit)
 
-
 # SHT25 address, 0x40(64)
 # Send temperature measurement command
-#		0xF3(243)	NO HOLD master
+# 0xF3(243)	NO HOLD master
 i2c_address = 0x40
 
-# Function to read temperature and humidity from the sensor
-def read_sensor_sht30():
+
+def read_sensor_sht30():  # Function to read temperature and humidity from the sensor
     # Send measurement command
     bus.write_i2c_block_data(address_30, 0x2C, [0x06])
 
@@ -29,8 +28,9 @@ def read_sensor_sht30():
 
     return temperature, humidity
 
+
 def read_sensor_sht25():
-#    bus.write_byte(i2c_address, 0xF3)
+    # bus.write_byte(i2c_address, 0xF3)
     # SHT25 address, 0x40(64)
     # Read data back, 2 bytes
     # Temp MSB, Temp LSB
@@ -39,11 +39,11 @@ def read_sensor_sht25():
 
     # Convert the data
     temp = data0 * 256 + data1
-    cTemp= -46.85 + ((temp * 175.72) / 65536.0)
+    c_temp = -46.85 + ((temp * 175.72) / 65536.0)
 
     # SHT25 address, 0x40(64)
     # Send humidity measurement command
-    #		0xF5(245)	NO HOLD master
+    # 0xF5(245)	NO HOLD master
     bus.write_byte(i2c_address, 0xF5)
 
     time.sleep(0.5)
@@ -58,7 +58,8 @@ def read_sensor_sht25():
     humidity = data0 * 256 + data1
     humidity = -6 + ((humidity * 125.0) / 65536.0)
 
-    return cTemp, humidity
+    return c_temp, humidity
+
 
 # Main program
 while True:
