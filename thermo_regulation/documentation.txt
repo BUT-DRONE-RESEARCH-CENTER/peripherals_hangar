@@ -1,0 +1,5 @@
+thermo_regulation is a dir for developing a code that help integrating peltier modules and sht sensors
+
+sht sensor config:
+    sht30 (waterproof) - outside
+    sht25 - inside
