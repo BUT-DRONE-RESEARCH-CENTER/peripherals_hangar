@@ -1,0 +1,6 @@
+pinout:
+	1 3v3
+	3 SDA green
+	5 SCL yellow
+	6 GND
+	

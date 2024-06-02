@@ -1,0 +1,3 @@
+Ofiko kamera (vetsi) V1.0
+	vyssi slider (bliz k objektivu) je focus
+	nizsi meni shutter
