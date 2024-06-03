@@ -1,5 +1,7 @@
 import smbus2
 import time
+# TODO: implement logging rotations
+
 
 # time interval between measurements in seconds
 measurement_interval = 60 * 1
