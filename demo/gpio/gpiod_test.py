@@ -1,16 +1,12 @@
-import time
-import gpiod
+from gpiozero import DigitalOutputDevice
+from time import sleep
 
-PIN_NO = 17
-chip = gpiod.Chip('gpiochip4')
-led_line = chip.get_line(PIN_NO)
-led_line.request(consumer="myLed", type=gpiod.LINE_REQ_DIR_OUT)
+output_pin = 17
 
-try:
-    while True:
-        led_line.set_value(1)
-        time.sleep(1)
-        led_line.set_value(0)
-        time.sleep(1)
-finally:
-    led_line.release()
+output_device = DigitalOutputDevice(output_pin)
+
+while True:
+    output_device.on()
+    sleep(0.5)
+    output_device.off()
+    sleep(1)
