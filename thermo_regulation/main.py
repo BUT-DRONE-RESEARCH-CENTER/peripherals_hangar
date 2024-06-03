@@ -1,6 +1,7 @@
 import smbus2
 import time
 # TODO: implement logging rotations
+# TODO: maybe the sht sensors can also work with gpiozero?
 
 
 # time interval between measurements in seconds
