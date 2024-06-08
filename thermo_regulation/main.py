@@ -1,21 +1,47 @@
 import smbus2
 import time
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import os
 # TODO: implement logging rotations
 # TODO: maybe the sht sensors can also work with gpiozero?
 
+# logger setup
+LOG_FILE = "therm_reg.log"
+LOG_DIR = "logs"
+BACKUP_COUNT = 5  # Number of backup log files to keep
+LOG_INTERVAL = 30  # Time interval in seconds for log rotation in iterations
+MEASUREMENT_INTERVAL = 60 * 1  # time interval between measurements in seconds
 
-# time interval between measurements in seconds
-measurement_interval = 60 * 1
+# ensure log dir exists
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
+
+# Logger setup
+logger = logging.getLogger("MyLogger")
+logger.setLevel(logging.INFO)
 
 # Define the I2C bus number and device address
 bus = smbus2.SMBus(1)  # For Raspberry Pi 1 or 2, use 0 instead of 1
 time.sleep(1)
 address_30 = 0x44  # SHT sensor address (7-bit)
 
-# SHT25 address, 0x40(64)
-# Send temperature measurement command
-# 0xF3(243)	NO HOLD master
+# SHT25 address, 0x40(64) 0xF3(243)	NO HOLD master
 i2c_address = 0x40
+
+# Logger setup
+logger = logging.getLogger("MyLogger")
+logger.setLevel(logging.INFO)
+
+# Timed rotating file handler
+handler = TimedRotatingFileHandler(
+    filename=os.path.join(LOG_DIR, LOG_FILE),
+    when="midnight",  # Rotate log at midnight
+    interval=2,  # Rotate every 1 interval (midnight in this case)
+    backupCount=BACKUP_COUNT  # Keep only the last 5 log files
+)
+handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+logger.addHandler(handler)
 
 
 def read_sensor_sht30():  # Function to read temperature and humidity from the sensor
@@ -35,7 +61,7 @@ def read_sensor_sht30():  # Function to read temperature and humidity from the s
     return temperature, humidity
 
 
-def read_sensor_sht25():
+def read_sensor_sht25():  # TODO: fix unexpected output
     # bus.write_byte(i2c_address, 0xF3)
     # SHT25 address, 0x40(64)
     # Read data back, 2 bytes
@@ -77,19 +103,18 @@ def adjust_temp(temp):
     temp_threshold_max = 35
     temp_threshold_min = 5
     if temp > temp_threshold_max:
-        pass
+        logger.warning(f"OUT {temp_30}\tIN {temp_25}")
     elif temp < temp_threshold_min:
-        pass
-    # TODO: consider increasing measurement frequency if threshold not met
+        logger.warning(f"OUT {temp_30}\tIN {temp_25}")
 
 
+iter_no = 1  # buffer
 while True:
-    print(f"Waiting for {measurement_interval}...")
-    time.sleep(measurement_interval)
-    print("Measuring...")
+    if iter_no % LOG_INTERVAL == 0:  # every LOG_INTERVALth iteration write data to log
+        iter_no = 0  # reset buffer
+        logger.info(f"OUT {temp_30}\tIN {temp_25}")
     temp_30, hum_30 = read_sensor_sht30()
     temp_25, hum_25 = read_sensor_sht25()
-    # console output
-    print(f"SHT30: Temp: {temp_30:.2f}°C Hum: {hum_30:.2f}%\n"
-          f"SHT25: Temp: {temp_25:.2f}°C Hum: {hum_25:.2f}%\n")
     adjust_temp(temp_25)
+    time.sleep(MEASUREMENT_INTERVAL)
+    iter_no += 1
