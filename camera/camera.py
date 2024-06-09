@@ -57,6 +57,7 @@ while True:
         picam2.start()
         while True:
             if file_too_big(output_file_path):
+            if file_too_big(output_file_path):
                 picam2.stop_recording()
                 break
             time.sleep(1)
