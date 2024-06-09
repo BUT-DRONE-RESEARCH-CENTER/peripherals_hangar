@@ -3,9 +3,9 @@ import time
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
+from datetime import datetime
 
 # logger setup
-LOG_FILE = "therm_reg.log"
 LOG_DIR = "logs"
 BACKUP_COUNT = 5  # Number of backup log files to keep
 LOG_INTERVAL = 2  # Time interval in seconds for log rotation in iterations
@@ -31,8 +31,9 @@ logger = logging.getLogger("MyLogger")
 logger.setLevel(logging.INFO)
 
 # Timed rotating file handler
+log_filename = os.path.join(LOG_DIR, datetime.now().strftime("%Y-%m-%d") + ".log")
 handler = TimedRotatingFileHandler(
-    filename=os.path.join(LOG_DIR, LOG_FILE),
+    filename=os.path.join(log_filename),
     when="midnight",  # Rotate log at midnight
     interval=2,  # Rotate every 1 interval (midnight in this case)
     backupCount=BACKUP_COUNT  # Keep only the last 5 log files
@@ -98,6 +99,7 @@ def adjust_temp(temp, hum):
     """
     evaluates the best action to take based on inside hangar temp
     serves as a logical unit for the voltage supplied to peltier modules
+    :param hum:
     :param temp: temperature inside hangar IN CELSIUS
     :return:
     """
