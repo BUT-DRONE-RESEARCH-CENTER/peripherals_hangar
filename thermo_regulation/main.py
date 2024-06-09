@@ -3,7 +3,6 @@ import time
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-# TODO: maybe the sht sensors can also work with gpiozero?
 
 # logger setup
 LOG_FILE = "therm_reg.log"
@@ -64,7 +63,7 @@ def read_sensor_sht30():  # Function to read temperature and humidity from the s
         return None, None
 
 
-def read_sensor_sht25():  # TODO: fix unexpected output
+def read_sensor_sht25():
     try:
         # Send temp measuring command
         bus.write_byte(ADDRESS_25, 0xF3)
@@ -74,7 +73,7 @@ def read_sensor_sht25():  # TODO: fix unexpected output
         data1 = bus.read_byte(ADDRESS_25)
 
         # Convert the data
-        temp = data0 * 256 + data1
+        temp = data1 * 256 + data0
         c_temp = -46.85 + ((temp * 175.72) / 65536.0)
 
         # Send humidity measurement command
@@ -116,8 +115,6 @@ while True:
     if temp_25 is None:
         logger.error("Failed to read from SHT25 sensor, retrying...")
         continue
-
-    time.sleep(5)
 
     temp_30, hum_30 = read_sensor_sht30()
     if temp_30 is None:
