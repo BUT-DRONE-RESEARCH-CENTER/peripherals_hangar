@@ -12,24 +12,26 @@ from picamera2.outputs import FileOutput, FfmpegOutput
 
 # setup
 VID_DIR = "vids"
-BACKUP_COUNT = 3  # number of backup files to keep
-MAX_FILE_SIZE = 1024 * 1024 * 5  # maximum file size in bytes
-FPS = 2  # TODO: yet to be implemented
+BACKUP_COUNT = 5  # number of backup files to keep
+MAX_FILE_SIZE = 1024 * 1024 * 200  # maximum file size in bytes
+FPS = 1
 
 # picam setup
 picam2 = Picamera2()
-video_config = picam2.create_video_configuration({"size": (400, 300)})
+video_config = picam2.create_video_configuration({"size": (200, 200)})
 video_config["controls"]["FrameRate"] = FPS
 picam2.configure(video_config)
 encoder = H264Encoder(2000000)
 
+
 # define functions
-def file_too_big(file_path):  # TODO: check if this approach is correct, otherwise use max time
+def file_too_big(file_path):
     if os.path.exists(file_path) and os.path.getsize(file_path) >= MAX_FILE_SIZE:
         print("Previous record removed")
         remove_oldest_rec()
         return True
     return False
+
 
 def remove_oldest_rec():
     dir_list = sorted(os.listdir(VID_DIR))
