@@ -13,7 +13,7 @@ from picamera2.outputs import FileOutput, FfmpegOutput
 VID_DIR = "vids"
 VID_FILE = "record.h264"
 BACKUP_COUNT = 3  # number of backup files to keep
-MAX_FILE_SIZE = 1024 * 1024 * 5 #  maximum file size in bytes
+MAX_FILE_SIZE = 1024 * 1024 * 5  # maximum file size in bytes
 FPS = 2  # TODO: yet to be implemented
 
 # picam setup
@@ -25,18 +25,17 @@ encoder = H264Encoder(2000000)
 
 # define functions
 def file_too_big(file_path):  # TODO: check if this approach is correct, otherwise use max time
-    if os.path.getsize(file_path.split('\\')[-1]) >= MAX_FILE_SIZE:
+    if os.path.getsize(file_path) >= MAX_FILE_SIZE:
         print("previous record removed")
         remove_oldest_rec()
         return True
     return False
 
-
 def remove_oldest_rec():
-    dir_list = os.listdir
-    if len(dir_list) == BACKUP_COUNT:
-        oldest_file = dir_list.pop(0)
-        os.remove(f"{VID_DIR}\\{oldest_file}")
+    dir_list = sorted(os.listdir(VID_DIR))
+    if len(dir_list) >= BACKUP_COUNT:
+        oldest_file = os.path.join(VID_DIR, dir_list[0])
+        os.remove(oldest_file)
 
 # ensure output dir exists
 if not os.path.exists(VID_DIR):
@@ -48,13 +47,13 @@ while True:
         stream = sock.makefile("wb")
 
         output_net = FileOutput(stream)
-        output_file = FfmpegOutput(f"{VID_DIR}\\{VID_FILE}")
+        output_file = FfmpegOutput(os.path.join(VID_DIR, VID_FILE))
         encoder.output = [output_file, output_net]
 
         picam2.start_encoder(encoder)
         picam2.start()
         while True:
-            if file_too_big(f"{VID_DIR}\\{VID_FILE}"):
+            if file_too_big(os.path.join(VID_DIR, VID_FILE)):
                 picam2.stop_recording()
                 break
         time.sleep(1)
