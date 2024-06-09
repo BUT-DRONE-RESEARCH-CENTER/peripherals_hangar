@@ -12,6 +12,10 @@ BACKUP_COUNT = 5  # Number of backup log files to keep
 LOG_INTERVAL = 2  # Time interval in seconds for log rotation in iterations
 MEASUREMENT_INTERVAL = 1  # time interval between measurements in seconds
 
+# regulation config
+TEMP_THRESHOLD_MAX = 30
+TEMP_THRESHOLD_MIN = 25
+
 # gpio output setup
 PELTIER_PIN = 17
 peltier_module = DigitalOutputDevice(PELTIER_PIN)
@@ -108,22 +112,30 @@ def adjust_temp(temp, hum):
     :param temp: temperature inside hangar IN CELSIUS
     :return:
     """
-    temp_threshold_max = 30  # TODO: invent better way, in which these variables are not read every time
-    temp_threshold_min = 25  # TODO: also think about iterative referencing to this func
-    if temp > temp_threshold_max:
+    # TODO: invent better way, in which these variables are not read every time
+    # TODO: also think about iterative referencing to this func
+    if temp > TEMP_THRESHOLD_MAX:
         logger.warning(f"IN {temp:.2f}°C, {hum}%")
-        peltier_cool()
-    elif temp < temp_threshold_min:
+        peltier_cool_down()
+    elif temp < TEMP_THRESHOLD_MIN:
         logger.warning(f"IN {temp:.2f}°C, {hum}%")
-        peltier_warm()
+        peltier_warm_up()
 
 
-def peltier_cool():
-    peltier_temporary()
+def peltier_cool_down():
+    temp = 100
+    while temp > TEMP_THRESHOLD_MAX:
+        temp, hum = read_sensor_sht25()
+        peltier_temporary()  # TODO: think of a way to change voltage polarity and implement it
+    peltier_module.off()
 
 
-def peltier_warm():
-    peltier_temporary()
+def peltier_warm_up():
+    temp = 0
+    while temp > TEMP_THRESHOLD_MAX:
+        temp, hum = read_sensor_sht25()
+        peltier_temporary()
+    peltier_module.off()
 
 
 def peltier_temporary():
@@ -146,7 +158,7 @@ while True:
         iter_no = 0  # Reset buffer
         logger.info(f"OUT {temp_30:.2f}°C, IN {temp_25:.2f}°C"
                     f"\tOUT{hum_30:.2f}%, IN {hum_25:.2f}%")
-    
+
     adjust_temp(temp_25, hum_25)
     time.sleep(MEASUREMENT_INTERVAL)
     iter_no += 1
