@@ -47,7 +47,7 @@ while True:
         stream = sock.makefile("wb")
 
         output_net = FileOutput(stream)
-        output_file = FfmpegOutput(f"{VID_DIR}\\{VID_FILE}")
+        output_file = FfmpegOutput(VID_FILE)
         encoder.output = [output_file, output_net]
 
         picam2.start_encoder(encoder)
