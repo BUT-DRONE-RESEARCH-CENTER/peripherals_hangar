@@ -4,6 +4,7 @@ import os
 
 import socket
 import time
+from datetime import datetime
 
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
@@ -11,7 +12,6 @@ from picamera2.outputs import FileOutput, FfmpegOutput
 
 # setup
 VID_DIR = "vids"
-VID_FILE = "record.h264"
 BACKUP_COUNT = 3  # number of backup files to keep
 MAX_FILE_SIZE = 1024 * 1024 * 5  # maximum file size in bytes
 FPS = 2  # TODO: yet to be implemented
@@ -47,7 +47,7 @@ while True:
         stream = sock.makefile("wb")
 
         output_net = FileOutput(stream)
-        output_file_path = os.path.join(VID_DIR, VID_FILE)
+        output_file_path = get_timestamped_filename()
         output_file = FfmpegOutput(output_file_path)
         encoder.output = [output_file, output_net]
 
