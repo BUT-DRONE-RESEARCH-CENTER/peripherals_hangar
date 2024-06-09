@@ -3,7 +3,6 @@ import time
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
-# TODO: implement logging rotations
 # TODO: maybe the sht sensors can also work with gpiozero?
 
 # logger setup
@@ -23,11 +22,10 @@ logger.setLevel(logging.INFO)
 
 # Define the I2C bus number and device address
 bus = smbus2.SMBus(1)  # For Raspberry Pi 1 or 2, use 0 instead of 1
-time.sleep(1)
-address_30 = 0x44  # SHT sensor address (7-bit)
+time.sleep(1)  # sleep after initializing smbus
 
-# SHT25 address, 0x40(64) 0xF3(243)	NO HOLD master
-i2c_address = 0x40
+ADDRESS_30 = 0x44  # SHT30 sensor address (7-bit)
+ADDRESS_25 = 0x40  # SHT25 address, 0x40(64) 0xF3(243)	NO HOLD master
 
 # Logger setup
 logger = logging.getLogger("MyLogger")
@@ -46,13 +44,13 @@ logger.addHandler(handler)
 
 def read_sensor_sht30():  # Function to read temperature and humidity from the sensor
     # Send measurement command
-    bus.write_i2c_block_data(address_30, 0x2C, [0x06])
+    bus.write_i2c_block_data(ADDRESS_30, 0x2C, [0x06])
 
     # Wait for measurement to complete
     time.sleep(0.5)
 
     # Read data (2 bytes for temperature, 2 bytes for humidity)
-    data = bus.read_i2c_block_data(address_30, 0x00, 4)
+    data = bus.read_i2c_block_data(ADDRESS_30, 0x00, 4)
 
     # Convert the data to temperature (in Celsius) and humidity (in %RH)
     temperature = (((data[0] * 256.0) + data[1]) * 175.72 / 65536.0) - 46.85
@@ -62,12 +60,12 @@ def read_sensor_sht30():  # Function to read temperature and humidity from the s
 
 
 def read_sensor_sht25():  # TODO: fix unexpected output
-    # bus.write_byte(i2c_address, 0xF3)
+    # bus.write_byte(ADDRESS_25, 0xF3)
     # SHT25 address, 0x40(64)
     # Read data back, 2 bytes
     # Temp MSB, Temp LSB
-    data0 = bus.read_byte(i2c_address)
-    data1 = bus.read_byte(i2c_address)
+    data0 = bus.read_byte(ADDRESS_25)
+    data1 = bus.read_byte(ADDRESS_25)
 
     # Convert the data
     temp = data0 * 256 + data1
@@ -76,15 +74,15 @@ def read_sensor_sht25():  # TODO: fix unexpected output
     # SHT25 address, 0x40(64)
     # Send humidity measurement command
     # 0xF5(245)	NO HOLD master
-    bus.write_byte(i2c_address, 0xF5)
+    bus.write_byte(ADDRESS_25, 0xF5)
 
     time.sleep(0.5)
 
     # SHT25 address, 0x40(64)
     # Read data back, 2 bytes
     # Humidity MSB, Humidity LSB
-    data0 = bus.read_byte(i2c_address)
-    data1 = bus.read_byte(i2c_address)
+    data0 = bus.read_byte(ADDRESS_25)
+    data1 = bus.read_byte(ADDRESS_25)
 
     # Convert the data
     humidity = data0 * 256 + data1
@@ -105,7 +103,7 @@ def adjust_temp(temp):
     if temp > temp_threshold_max:
         logger.warning(f"OUT {temp_30}\tIN {temp_25}")
     elif temp < temp_threshold_min:
-        logger.warning(f"OUT {temp_30}\tIN {temp_25}")
+        logger.warning(f"OUT {temp_30}\tIN {temp_25}")  # TODO: 
 
 
 iter_no = 1  # buffer
