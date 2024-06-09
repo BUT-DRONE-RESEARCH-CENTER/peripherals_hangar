@@ -27,15 +27,15 @@ encoder = H264Encoder(2000000)
 def file_too_big(file_path):  # TODO: check if this approach is correct, otherwise use max time
     if os.path.getsize(f"{VID_DIR}//{file_path}") >= MAX_FILE_SIZE:
         remove_oldest_rec
-        return 1
-    return 0
+        return True
+    return False
 
 
 def remove_oldest_rec():
     dir_list = os.listdir
     if len(dir_list) == BACKUP_COUNT:
         oldest_file = dir_list.pop(0)
-        os.remove(oldest_file)
+        os.remove(f"{VID_DIR}\\{oldest_file}")
 
 # ensure output dir exists
 if not os.path.exists(VID_DIR):
@@ -47,13 +47,13 @@ while True:
         stream = sock.makefile("wb")
 
         output_net = FileOutput(stream)
-        output_file = FfmpegOutput(VID_FILE)
+        output_file = FfmpegOutput(f"{VID_DIR}\\{VID_FILE}")
         encoder.output = [output_file, output_net]
 
         picam2.start_encoder(encoder)
         picam2.start()
-        while not file_too_big:
-            pass
-        picam2.stop_recording()
-
-
+        while True:
+            if file_too_big(f"{VID_DIR}\\{VID_FILE}"):
+                picam2.stop_recording()
+                break
+        time.sleep(1)
