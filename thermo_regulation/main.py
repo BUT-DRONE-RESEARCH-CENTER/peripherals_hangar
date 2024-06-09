@@ -102,11 +102,11 @@ def adjust_temp(temp):
 
 iter_no = 1  # buffer
 while True:
+    temp_25, hum_25 = read_sensor_sht25()
+    temp_30, hum_30 = read_sensor_sht30()
     if iter_no % LOG_INTERVAL == 0:  # every LOG_INTERVALth iteration write data to log
         iter_no = 0  # reset buffer
         logger.info(f"OUT {temp_30}\tIN {temp_25}")
-    temp_25, hum_25 = read_sensor_sht25()
-    temp_30, hum_30 = read_sensor_sht30()
     adjust_temp(temp_25)
     time.sleep(MEASUREMENT_INTERVAL)
     iter_no += 1
