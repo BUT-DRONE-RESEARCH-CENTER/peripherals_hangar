@@ -43,46 +43,56 @@ logger.addHandler(handler)
 
 
 def read_sensor_sht30():  # Function to read temperature and humidity from the sensor
-    # Send measurement command
-    bus.write_i2c_block_data(ADDRESS_30, 0x2C, [0x06])
+    try:
+        # Send measurement command
+        bus.write_i2c_block_data(ADDRESS_30, 0x2C, [0x06])
 
-    # Wait for measurement to complete
-    time.sleep(0.5)
+        # Wait for measurement to complete
+        time.sleep(0.5)
 
-    # Read data (2 bytes for temperature, 2 bytes for humidity)
-    data = bus.read_i2c_block_data(ADDRESS_30, 0x00, 4)
+        # Read data (2 bytes for temperature, 2 bytes for humidity)
+        data = bus.read_i2c_block_data(ADDRESS_30, 0x00, 4)
 
-    # Convert the data to temperature (in Celsius) and humidity (in %RH)
-    temperature = (((data[0] * 256.0) + data[1]) * 175.72 / 65536.0) - 46.85
-    humidity = (((data[2] * 256.0) + data[3]) * 125.0 / 65536.0) - 6.0
+        # Convert the data to temperature (in Celsius) and humidity (in %RH)
+        temperature = (((data[0] * 256.0) + data[1]) * 175.72 / 65536.0) - 46.85
+        humidity = (((data[2] * 256.0) + data[3]) * 125.0 / 65536.0) - 6.0
 
-    return temperature, humidity
+        return temperature, humidity
+
+    except Exception as e:
+        logger.error(f"Failed to read from SHT30 sensor: {e}")
+        return None, None
 
 
 def read_sensor_sht25():  # TODO: fix unexpected output
-    # Send temp measuring command
-    bus.write_byte(ADDRESS_25, 0xF3)
-    time.sleep(0.5)
-    # Temp MSB, Temp LSB
-    data0 = bus.read_byte(ADDRESS_25)
-    data1 = bus.read_byte(ADDRESS_25)
+    try:
+        # Send temp measuring command
+        bus.write_byte(ADDRESS_25, 0xF3)
+        time.sleep(0.5)
+        # Temp MSB, Temp LSB
+        data0 = bus.read_byte(ADDRESS_25)
+        data1 = bus.read_byte(ADDRESS_25)
 
-    # Convert the data
-    temp = data0 * 256 + data1
-    c_temp = -46.85 + ((temp * 175.72) / 65536.0)
+        # Convert the data
+        temp = data0 * 256 + data1
+        c_temp = -46.85 + ((temp * 175.72) / 65536.0)
 
-    # Send humidity measurement command
-    bus.write_byte(ADDRESS_25, 0xF5)
-    time.sleep(0.5)
-    # Humidity MSB, Humidity LSB
-    data0 = bus.read_byte(ADDRESS_25)
-    data1 = bus.read_byte(ADDRESS_25)
+        # Send humidity measurement command
+        bus.write_byte(ADDRESS_25, 0xF5)
+        time.sleep(0.5)
+        # Humidity MSB, Humidity LSB
+        data0 = bus.read_byte(ADDRESS_25)
+        data1 = bus.read_byte(ADDRESS_25)
 
-    # Convert the data
-    humidity = data0 * 256 + data1
-    humidity = -6 + ((humidity * 125.0) / 65536.0)
+        # Convert the data
+        humidity = data0 * 256 + data1
+        humidity = -6 + ((humidity * 125.0) / 65536.0)
 
-    return c_temp, humidity
+        return c_temp, humidity
+
+    except Exception as e:
+        logger.error(f"Failed to read from SHT25 sensor: {e}")
+        return None, None
 
 
 def adjust_temp(temp):
@@ -95,19 +105,29 @@ def adjust_temp(temp):
     temp_threshold_max = 35
     temp_threshold_min = 5
     if temp > temp_threshold_max:
-        logger.warning(f"OUT {temp_30}\tIN {temp_25}")
+        logger.warning(f"OUT {temp_30:.2f}\tIN {temp_25:.2f}")
     elif temp < temp_threshold_min:
-        logger.warning(f"OUT {temp_30}\tIN {temp_25}")  # TODO: 
+        logger.warning(f"OUT {temp_30:.2f}\tIN {temp_25:.2f}")  # TODO: 
 
 
 iter_no = 1  # buffer
 while True:
     temp_25, hum_25 = read_sensor_sht25()
+    if temp_25 is None:
+        logger.error("Failed to read from SHT25 sensor, retrying...")
+        continue
+
     time.sleep(5)
+
     temp_30, hum_30 = read_sensor_sht30()
-    if iter_no % LOG_INTERVAL == 0:  # every LOG_INTERVALth iteration write data to log
-        iter_no = 0  # reset buffer
-        logger.info(f"OUT {temp_30}\tIN {temp_25}")
+    if temp_30 is None:
+        logger.error("Failed to read from SHT30 sensor, retrying...")
+        continue
+
+    if iter_no % LOG_INTERVAL == 0:  # Every LOG_INTERVALth iteration write data to log
+        iter_no = 0  # Reset buffer
+        logger.info(f"OUT {temp_30}°C, {hum_30}%RH\tIN {temp_25}°C, {hum_25}%RH")
+    
     adjust_temp(temp_25)
     time.sleep(MEASUREMENT_INTERVAL)
     iter_no += 1
