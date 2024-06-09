@@ -1,5 +1,6 @@
 import socket
 import time
+import os
 
 from picamera2 import Picamera2
 from picamera2.encoders import H264Encoder
@@ -20,5 +21,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
 
     picam2.start_encoder(encoder)
     picam2.start()
+    time.sleep(10)
+    print("File size after 10 sec: ", os.path.getsize(f"video.mp4"))
     input("Waiting for interrupt...")
     picam2.stop_recording()
