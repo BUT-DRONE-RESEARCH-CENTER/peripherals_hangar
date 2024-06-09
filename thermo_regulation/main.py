@@ -95,7 +95,7 @@ def read_sensor_sht25():  # TODO: fix unexpected output
         return None, None
 
 
-def adjust_temp(temp):
+def adjust_temp(temp, hum):
     """
     evaluates the best action to take based on inside hangar temp
     serves as a logical unit for the voltage supplied to peltier modules
@@ -105,9 +105,9 @@ def adjust_temp(temp):
     temp_threshold_max = 35
     temp_threshold_min = 5
     if temp > temp_threshold_max:
-        logger.warning(f"OUT {temp_30:.2f}\tIN {temp_25:.2f}")
+        logger.warning(f"IN {temp:.2f}°C, {hum}%")
     elif temp < temp_threshold_min:
-        logger.warning(f"OUT {temp_30:.2f}\tIN {temp_25:.2f}")  # TODO: 
+        logger.warning(f"IN {temp:.2f}°C, {hum}%")
 
 
 iter_no = 1  # buffer
@@ -126,7 +126,8 @@ while True:
 
     if iter_no % LOG_INTERVAL == 0:  # Every LOG_INTERVALth iteration write data to log
         iter_no = 0  # Reset buffer
-        logger.info(f"OUT {temp_30}\tIN {temp_25}")
+        logger.info(f"OUT {temp_30:.2f}°C, IN {temp_25:.2f}°C"
+                    f"\tOUT{hum_30:.2f}%, IN {hum_25:.2f}%")
     
     adjust_temp(temp_25)
     time.sleep(MEASUREMENT_INTERVAL)
