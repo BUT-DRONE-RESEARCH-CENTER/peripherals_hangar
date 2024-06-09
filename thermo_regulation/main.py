@@ -132,7 +132,7 @@ def peltier_cool_down():
 
 def peltier_warm_up():
     temp = 0
-    while temp > TEMP_THRESHOLD_MAX:
+    while temp < TEMP_THRESHOLD_MIN:
         temp, hum = read_sensor_sht25()
         peltier_temporary()
     peltier_module.off()
