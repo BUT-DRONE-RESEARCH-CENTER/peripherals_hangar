@@ -72,8 +72,8 @@ def read_sensor_sht30():  # Function to read temperature and humidity from the s
 def read_sensor_sht25():
     try:
         # Send temp measuring command
-        bus.write_byte(ADDRESS_25, 0xF3)
-        time.sleep(0.5)
+        bus.write_byte(ADDRESS_25, 0xE3)
+        time.sleep(0.1)
         # Temp MSB, Temp LSB
         data0 = bus.read_byte(ADDRESS_25)
         data1 = bus.read_byte(ADDRESS_25)
@@ -83,8 +83,8 @@ def read_sensor_sht25():
         c_temp = -46.85 + ((temp * 175.72) / 65536.0)
 
         # Send humidity measurement command
-        bus.write_byte(ADDRESS_25, 0xF5)
-        time.sleep(0.5)
+        bus.write_byte(ADDRESS_25, 0xE5)
+        time.sleep(0.1)
         # Humidity MSB, Humidity LSB
         data0 = bus.read_byte(ADDRESS_25)
         data1 = bus.read_byte(ADDRESS_25)
