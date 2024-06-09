@@ -10,7 +10,7 @@ from gpiozero import DigitalOutputDevice
 LOG_DIR = "logs"
 BACKUP_COUNT = 5  # Number of backup log files to keep
 LOG_INTERVAL = 2  # Time interval in seconds for log rotation in iterations
-MEASUREMENT_INTERVAL = 1  # time interval between measurements in seconds
+MEASUREMENT_INTERVAL = 30  # time interval between measurements in seconds
 
 # regulation config
 TEMP_THRESHOLD_MAX = 30
