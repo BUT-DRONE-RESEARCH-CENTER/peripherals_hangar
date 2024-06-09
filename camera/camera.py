@@ -25,7 +25,8 @@ encoder = H264Encoder(2000000)
 
 # define functions
 def file_too_big(file_path):  # TODO: check if this approach is correct, otherwise use max time
-    if os.path.getsize(VID_DIR) >= MAX_FILE_SIZE:
+    if os.path.getsize(file_path.split('\\')[-1]) >= MAX_FILE_SIZE:
+        print("previous record removed")
         remove_oldest_rec()
         return True
     return False
