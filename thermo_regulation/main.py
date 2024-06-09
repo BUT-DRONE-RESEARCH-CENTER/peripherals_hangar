@@ -129,6 +129,6 @@ while True:
         logger.info(f"OUT {temp_30:.2f}°C, IN {temp_25:.2f}°C"
                     f"\tOUT{hum_30:.2f}%, IN {hum_25:.2f}%")
     
-    adjust_temp(temp_25)
+    adjust_temp(temp_25, hum_25)
     time.sleep(MEASUREMENT_INTERVAL)
     iter_no += 1
