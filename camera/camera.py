@@ -37,6 +37,12 @@ def remove_oldest_rec():
         oldest_file = os.path.join(VID_DIR, dir_list[0])
         os.remove(oldest_file)
 
+
+def get_timestamped_filename():
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return os.path.join(VID_DIR, f"record_{timestamp}.h264")
+
+
 # ensure output dir exists
 if not os.path.exists(VID_DIR):
     os.mkdir(VID_DIR)
