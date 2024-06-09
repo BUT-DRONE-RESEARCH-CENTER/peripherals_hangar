@@ -126,7 +126,7 @@ while True:
 
     if iter_no % LOG_INTERVAL == 0:  # Every LOG_INTERVALth iteration write data to log
         iter_no = 0  # Reset buffer
-        logger.info(f"OUT {temp_30}°C, {hum_30}%RH\tIN {temp_25}°C, {hum_25}%RH")
+        logger.info(f"OUT {temp_30}\tIN {temp_25}")
     
     adjust_temp(temp_25)
     time.sleep(MEASUREMENT_INTERVAL)
