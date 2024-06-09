@@ -27,6 +27,8 @@ encoder = H264Encoder(2000000)
 def file_too_big(file_path):  # TODO: check if this approach is correct, otherwise use max time
     if os.path.exists(file_path) and os.path.getsize(file_path) >= MAX_FILE_SIZE:
         print("Previous record removed")
+    if os.path.exists(file_path) and os.path.getsize(file_path) >= MAX_FILE_SIZE:
+        print("Previous record removed")
         remove_oldest_rec()
         return True
     return False
@@ -57,4 +59,5 @@ while True:
             if file_too_big(output_file_path):
                 picam2.stop_recording()
                 break
+            time.sleep(1)
             time.sleep(1)
