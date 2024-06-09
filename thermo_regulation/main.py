@@ -9,8 +9,8 @@ import os
 LOG_FILE = "therm_reg.log"
 LOG_DIR = "logs"
 BACKUP_COUNT = 5  # Number of backup log files to keep
-LOG_INTERVAL = 30  # Time interval in seconds for log rotation in iterations
-MEASUREMENT_INTERVAL = 60 * 1  # time interval between measurements in seconds
+LOG_INTERVAL = 2  # Time interval in seconds for log rotation in iterations
+MEASUREMENT_INTERVAL = 1  # time interval between measurements in seconds
 
 # ensure log dir exists
 if not os.path.exists(LOG_DIR):
@@ -103,6 +103,7 @@ def adjust_temp(temp):
 iter_no = 1  # buffer
 while True:
     temp_25, hum_25 = read_sensor_sht25()
+    time.sleep(5)
     temp_30, hum_30 = read_sensor_sht30()
     if iter_no % LOG_INTERVAL == 0:  # every LOG_INTERVALth iteration write data to log
         iter_no = 0  # reset buffer
