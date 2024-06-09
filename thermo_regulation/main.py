@@ -4,12 +4,17 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 from datetime import datetime
+from gpiozero import DigitalOutputDevice
 
 # logger setup
 LOG_DIR = "logs"
 BACKUP_COUNT = 5  # Number of backup log files to keep
 LOG_INTERVAL = 2  # Time interval in seconds for log rotation in iterations
 MEASUREMENT_INTERVAL = 1  # time interval between measurements in seconds
+
+# gpio output setup
+PELTIER_PIN = 17
+peltier_module = DigitalOutputDevice(PELTIER_PIN)
 
 # ensure log dir exists
 if not os.path.exists(LOG_DIR):
@@ -103,12 +108,26 @@ def adjust_temp(temp, hum):
     :param temp: temperature inside hangar IN CELSIUS
     :return:
     """
-    temp_threshold_max = 35
-    temp_threshold_min = 5
+    temp_threshold_max = 30  # TODO: invent better way, in which these variables are not read every time
+    temp_threshold_min = 25  # TODO: also think about iterative referencing to this func
     if temp > temp_threshold_max:
         logger.warning(f"IN {temp:.2f}°C, {hum}%")
+        peltier_cool()
     elif temp < temp_threshold_min:
         logger.warning(f"IN {temp:.2f}°C, {hum}%")
+        peltier_warm()
+
+
+def peltier_cool():
+    peltier_temporary()
+
+
+def peltier_warm():
+    peltier_temporary()
+
+
+def peltier_temporary():
+    peltier_module.on()
 
 
 iter_no = 1  # buffer
