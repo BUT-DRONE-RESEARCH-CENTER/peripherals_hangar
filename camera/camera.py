@@ -54,8 +54,8 @@ def doors_open():
     return False
 
 
-def file_too_big(file_path):
-    if os.path.exists(file_path) and os.path.getsize(file_path) >= MAX_FILE_SIZE:
+def file_too_big(file_path, max_size=MAX_FILE_SIZE):
+    if os.path.exists(file_path) and os.path.getsize(file_path) >= max_size:
         logger.info("Previous record removed due to size limit.")
         remove_oldest_rec()
         return True
@@ -107,7 +107,7 @@ def main():
                 while True:
                     if doors_open():
                         picam2_1.start()
-                        if file_too_big(output_file_path_1):
+                        if file_too_big(output_file_path_1, max_size=MAX_FILE_SIZE * 10):
                             picam2_1.stop_recording()
                         doors_were_open = True
                     elif doors_were_open:
