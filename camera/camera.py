@@ -80,19 +80,24 @@ def main():
     doors_were_open = False
 
     while True:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.connect(("0.0.0.0", 10001))
-            stream = sock.makefile("wb")
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock_0, socket.socket(socket.AF_INET,
+                                                                                       socket.SOCK_DGRAM) as sock_1:
+            sock_0.connect(("0.0.0.0", 10001))
+            sock_1.connect(("0.0.0.0", 10002))
 
-            output_net = FileOutput(stream)
+            stream_0 = sock_0.makefile("wb")
+            stream_1 = sock_1.makefile("wb")
+
+            output_net_0 = FileOutput(stream_0)
+            output_net_1 = FileOutput(stream_1)
 
             output_file_path_0 = get_timestamped_filename("record")
             output_file_0 = FfmpegOutput(output_file_path_0)
-            encoder_0.output = [output_file_0, output_net]
+            encoder_0.output = [output_file_0, output_net_0]
 
             output_file_path_1 = get_timestamped_filename("doors_record")
             output_file_1 = FfmpegOutput(output_file_path_1)
-            encoder_1.output = [output_file_1, output_net]
+            encoder_1.output = [output_file_1, output_net_1]
 
             picam2_0.start_encoder(encoder_0)
             picam2_1.start_encoder(encoder_1)
