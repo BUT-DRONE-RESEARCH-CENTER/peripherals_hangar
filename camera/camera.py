@@ -112,6 +112,7 @@ def main():
                         doors_were_open = True
                     elif doors_were_open:
                         picam2_1.stop()
+                        # TODO: possible to report to the server
                         doors_were_open = False
 
                     if file_too_big(output_file_path_0):
