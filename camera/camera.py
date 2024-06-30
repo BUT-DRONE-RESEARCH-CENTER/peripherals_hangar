@@ -1,3 +1,8 @@
+"""
+camera_0 according to the README.md, this camera is outside
+camera_1 according to the README.md, this camera is inside
+"""
+
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
@@ -17,10 +22,14 @@ MAX_FILE_SIZE = 1024 * 1024 * 200  # maximum file size in bytes
 FPS = 1
 
 # picam setup
-picam2 = Picamera2()
-video_config = picam2.create_video_configuration({"size": (200, 200)})
-video_config["controls"]["FrameRate"] = FPS
-picam2.configure(video_config)
+picam2_0 = Picamera2(camera_num=0)
+picam2_1 = Picamera2(camera_num=1)
+video_config_0 = picam2_0.create_video_configuration({"size": (200, 200)})
+video_config_1 = picam2_1.create_video_configuration({"size": (200, 200)})
+video_config_0["controls"]["FrameRate"] = FPS
+video_config_1["controls"]["FrameRate"] = FPS
+picam2_0.configure(video_config_0)
+picam2_1.configure(video_config_1)
 encoder = H264Encoder(2000000)
 
 
