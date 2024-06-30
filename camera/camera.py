@@ -73,6 +73,9 @@ def doors_get_timestamped_filename():
 if not os.path.exists(VID_DIR):
     os.mkdir(VID_DIR)
 
+
+# main loop
+doors_were_open = False
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         sock.connect(("0.0.0.0", 10001))
