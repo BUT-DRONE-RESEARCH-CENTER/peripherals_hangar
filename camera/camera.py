@@ -15,7 +15,7 @@ from picamera2.outputs import FileOutput, FfmpegOutput
 
 # Constants
 VID_DIR = "vids"
-BACKUP_COUNT = 5
+BACKUP_COUNT = 8
 MAX_FILE_SIZE = 1024 * 1024 * 200
 FPS_IN = 5
 FPS_OUT = 1
