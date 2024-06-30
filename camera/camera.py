@@ -107,6 +107,8 @@ def main():
                 while True:
                     if doors_open():
                         picam2_1.start()
+                        if file_too_big(output_file_path_1):
+                            picam2_1.stop_recording()
                         doors_were_open = True
                     elif doors_were_open:
                         picam2_1.stop()
