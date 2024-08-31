@@ -67,7 +67,7 @@ def post_to_server(flag, data):
     else:
         return -1
 
-    response = requests.post(url, json=json.dumps(data))
+    response = requests.post(url, json=data)
 
 
 def arg_recognition():
