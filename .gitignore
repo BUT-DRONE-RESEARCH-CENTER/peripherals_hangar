@@ -1,3 +1,5 @@
 /thermo_regulation/logging_test.py
 *.jpg
 *.mp4
+/thermo_regulation/logs/
+*.logs
