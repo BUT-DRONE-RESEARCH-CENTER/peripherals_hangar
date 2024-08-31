@@ -18,6 +18,7 @@ def sniff_vars(file: str) -> Dict[str, Dict[str, Dict[str, Any]]]:
 			value = value.strip()
 			val, comment = value.split("#") if "#" in value else (value, "")
 			db[key.strip()]["value"] = val.strip()
+			db[key.strip()]["default"] = val.strip()
 			db[key.strip()]["comment"] = comment.strip()
 	return {file: db}
 
