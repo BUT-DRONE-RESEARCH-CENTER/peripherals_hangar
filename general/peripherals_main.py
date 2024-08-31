@@ -102,4 +102,5 @@ def main():
 
 
 if __name__ == "__main__":
+    __import__("subprocess").Popen(["python3", "advertise.py"], stdout=None, stderr=None, stdin=None, close_fds=True, start_new_session=True) # keď boh dá tak pôjde
     main()
