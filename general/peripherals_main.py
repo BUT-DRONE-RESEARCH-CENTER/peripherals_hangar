@@ -67,7 +67,7 @@ def post_to_server(flag, data):
     else:
         return -1
 
-    response = requests.post(url, json=json.dumps(data))
+    response = requests.post(url, json=data)
 
 
 def arg_recognition():
@@ -102,4 +102,5 @@ def main():
 
 
 if __name__ == "__main__":
+    __import__("subprocess").Popen(["python3", "advertise.py"], stdout=None, stderr=None, stdin=None, close_fds=True, start_new_session=True) # keď boh dá tak pôjde
     main()

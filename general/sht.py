@@ -6,6 +6,20 @@ import os
 from datetime import datetime
 from gpiozero import DigitalOutputDevice
 
+import asyncio
+
+import aiohttp
+
+async def callback(request: aiohttp.web.Request) -> aiohttp.web.Response:
+    data = await request.json()
+    for key in data.keys():
+        if key not in globals().keys():
+            return request.Response(status=400)
+    
+    for key, value in data.items():
+        globals()[key] = value
+    return request.Response(status=200)
+
 # logger setup
 LOG_DIR = "logs"
 BACKUP_COUNT = 5  # Number of backup log files to keep
@@ -141,25 +155,37 @@ def peltier_warm_up():
 def peltier_temporary():
     peltier_module.on()  # TODO: write a code for h bridge to control the voltage
 
+async def background_task():
+    iter_no = 1  # buffer
+    while True:
+        temp_25, hum_25 = read_sensor_sht25()
+        if temp_25 is None:
+            logger.error("Failed to read from SHT25 sensor, retrying...")
+            continue
 
-iter_no = 1  # buffer
-while True:
-    temp_25, hum_25 = read_sensor_sht25()
-    if temp_25 is None:
-        logger.error("Failed to read from SHT25 sensor, retrying...")
-        continue
+        temp_30, hum_30 = read_sensor_sht30()
+        if temp_30 is None:
+            logger.error("Failed to read from SHT30 sensor, retrying...")
+            continue
 
-    temp_30, hum_30 = read_sensor_sht30()
-    if temp_30 is None:
-        logger.error("Failed to read from SHT30 sensor, retrying...")
-        continue
+        if iter_no % LOG_INTERVAL == 0:  # Every LOG_INTERVALth iteration write data to log
+            iter_no = 0  # Reset buffer
+            logger.info(f"OUT {temp_30:.2f}°C, IN {temp_25:.2f}°C"
+                        f"\tOUT{hum_30:.2f}%, IN {hum_25:.2f}%")
+            data_queue.put([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), temp_25, hum_25, temp_30, hum_30])
 
-    if iter_no % LOG_INTERVAL == 0:  # Every LOG_INTERVALth iteration write data to log
-        iter_no = 0  # Reset buffer
-        logger.info(f"OUT {temp_30:.2f}°C, IN {temp_25:.2f}°C"
-                    f"\tOUT{hum_30:.2f}%, IN {hum_25:.2f}%")
-        data_queue.put([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), temp_25, hum_25, temp_30, hum_30])
+        adjust_temp(temp_25, hum_25)
+        await asyncio.sleep(MEASUREMENT_INTERVAL)
+        iter_no += 1
 
-    adjust_temp(temp_25, hum_25)
-    time.sleep(MEASUREMENT_INTERVAL)
-    iter_no += 1
+app = aiohttp.web.Application()
+app.router.add_post(f'/{__file__.split(os.sep)[-1].split(".")[0]}', callback) # route corresponds to the file name
+
+async def main():
+    runner = aiohttp.web.AppRunner(app)
+    await runner.setup()
+    site = aiohttp.web.TCPSite(runner, 'localhost', 8080)
+    await site.start()
+    
+    await background_task()
+

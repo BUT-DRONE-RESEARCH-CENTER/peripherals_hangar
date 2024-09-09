@@ -14,11 +14,11 @@ from picamera2.encoders import H264Encoder
 from picamera2.outputs import FileOutput, FfmpegOutput
 
 # Constants
-VID_DIR = "vids"
-BACKUP_COUNT = 8
-MAX_FILE_SIZE = 1024 * 1024 * 200
-FPS_IN = 5
-FPS_OUT = 1
+VID_DIR = "vids"  # name of the directory in which recorded videos are stored
+BACKUP_COUNT = 8  # how many videos will be preserved before rotation
+MAX_FILE_SIZE = 1024 * 1024 * 200  # maximum file size of one video
+FPS_IN = 5  # FPS for camera inside of the hangar
+FPS_OUT = 1  # FPS for camera outside of the hangar
 
 # Setup logging
 logger = logging.getLogger("camera_logger")
