@@ -7,7 +7,7 @@ this repo is used for development of electronics related sw used in autonomous d
   - **GPIO** h-bridge and relay activation
 - a module for monitoring battery status has been added (see battery_readout)
 ## GPIO schematic
-![gpio schematic](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/GPIO_pinout.jpg)
+![gpio schematic](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/documentation/GPIO_pinout.jpg)
 ### GPIO Description
 - **VCC** (*2, 4, 6, 35, 39, 37*): 12 to 5V stepdown power supply
 - **Dependencies** (*9, 17*): power supply for SHT and more
@@ -23,9 +23,9 @@ this repo is used for development of electronics related sw used in autonomous d
 - This module is connected with the battery
 - On its connector is a white cable that acts as a signal flag for the LP
 
-![battery readout module](/doumentation/battery_readout_module.jpg)
+![battery readout module](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/documentation/battery_readout_module.jpg)
 ### H-bridge
 - The elemts H-bridge is connected to are yet to be tested (9. 9. 2024)
 
 ### All Peripherals
-![all peripherals](/documentation/all_peripherals.jpg)
+![all peripherals](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/documentation/connection_summary.jpg)
