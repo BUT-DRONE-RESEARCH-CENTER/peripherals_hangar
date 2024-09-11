@@ -7,7 +7,7 @@ for NEMA 17 the current is ~2A, hence adjust the voltage on driver to 0.6V
 
 # Setup Description
 ![cnc shield connection schematic](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/documentation/cnc_shield_connection.png)
-**There is a jumper on axis mirror pins to mirror Z axis on the A axis due to grbl limitations**
+**There is a jumper on axis mirror pins to mirror Z axis on the A axis due to grbl limitations**\
 Raspberry sends COM commands to Arduino. COM contains gcode for a GBRL firmware to process. GBRL communicates with motor drivers and endstops.
 ## Notes & TODOs
 - GBRL library can be found in gbrl-master, Arduino is flashed with the example **gbrlUpload**
