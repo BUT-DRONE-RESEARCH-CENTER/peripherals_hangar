@@ -22,6 +22,10 @@ this repo is used for development of electronics related sw used in autonomous d
 ### Battery Readout Module
 - This module is connected with the battery
 - On its connector is a white cable that acts as a signal flag for the LP
+### Stepper Motors Control
+- Arduino UNO is connected to the RPI via USB (COM)
+- There is <a src='https://github.com/gnea/grbl'>GRBL firmware</a> running to process gcode sent from the RPI and interpret it to the motor drivers (*A4988*) and endstop switches
+- This setup is yet to be tested (11. 9.)
 
 ![battery readout module](https://github.com/BUT-DRONE-RESEARCH-CENTER/peripherals_hangar/blob/main/documentation/battery_readout_module.jpg)
 ### H-bridge
