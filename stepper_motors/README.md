@@ -14,7 +14,7 @@ Raspberry sends COM commands to Arduino. COM contains gcode for a GBRL firmware 
   - change the gcode in the python script (I am unsure of whether 100 in each axis is enough to open the door)
 
 # Useful Resources
-- [Tips for working with CNC shield](https://www.youtube.com/watch?v=OfyT1xTZC6o&ab_channel=jtechcustoms)
+- [Tips for working with CNC shield](https://www.youtube.com/watch?v=OfyT1xTZC6o&ab_channel=jtechcustoms) introduces interesting points about overheating
 - [Manual @dratek.cz](https://navody.dratek.cz/navody-k-produktum/arduino-cnc-shield-driver-a4988-motor-28byj-48.html)
 - [GRBL GitHub](https://github.com/gnea/grbl)
 
