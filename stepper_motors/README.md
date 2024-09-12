@@ -1,5 +1,4 @@
-Latest update on 11. 9. 2024 :airplane: :city_sunrise:
-
+Latest update on 12. 9. 2024
 # WARNING
 
 THE TRIMMER IS TO BE SET TO 0V BEFORE CONNECTING MOTORS OR EXT. POWER (see [links](#Useful-Resources))
