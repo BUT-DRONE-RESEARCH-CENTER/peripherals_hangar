@@ -3,6 +3,8 @@ import time
 
 # TODO: test the maximum safe feedrate for the motors
 MAX_FEEDRATE = 1000  # Maximum feedrate for the CNC machine, units in mm/min (probably)
+# TODO: adjust time to wait
+WAIT_AFTER_GCODE = 5000  # In ms
 
 
 # Function to open the door
@@ -15,10 +17,12 @@ def open_door(ser):
     # Move the motors towards the endstops
     send_gcode(ser, f"G1 X100 Y100 Z100 F{MAX_FEEDRATE}")  # Move X, Y, Z (and cloned A) axes
     # TODO: test if 100 is long enough distance, if not, increase it
+    send_gcode(ser, f"G4 P{WAIT_AFTER_GCODE}")
 
 # Function to close the door
 def close_door(ser):
     send_gcode(ser, f"G1 X0 Y0 Z0 F{MAX_FEEDRATE}")
+    send_gcode(ser, f"G4 P{WAIT_AFTER_GCODE}")
 
 
 # Function to send G-code commands to GRBL and receive response
