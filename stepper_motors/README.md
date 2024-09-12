@@ -1,6 +1,8 @@
 Latest update on 11. 9. 2024 :airplane: :city_sunrise:
 
 # WARNING
+THE TRIMMER IS TO BE SET TO 0V BEFORE CONNECTING MOTORS OR EXT. POWER (see [links](#-Useful-Resources))
+
 DO NOT ADD EXTERNAL POWER WITHOUT CONNECTING THE LOAD (MOTOR) TO EACH DRIVER!!! DO NOT DISCONNECT THE MOTORS WHILE EXTERNAL POWER IS ON
 
 for NEMA 17 the current is ~2A, hence adjust the voltage on driver to 0.6V
