@@ -10,7 +10,7 @@ for NEMA 17 the current is ~2A, hence adjust the voltage on driver to 0.6V
 
 # Connecting the Drivers & Motors
 
-- Tune the trimmer on the A4988 driver so you will measure between the negative pin of $V_external$ and the body of the trimmer $V_ref = \frac{I_max \mathrm{[A]}{2.5} - 0.1 \mathrm{[V]}$
+- Tune the trimmer on the A4988 driver so you will measure between the negative pin of $V_{external}$ and the body of the trimmer $V_ref = \frac{I_max \mathrm{A}{2.5} - 0.1 \mathrm{V}$
 - No driver can be connected without the motor while $V_external$ is on (burns A4988 instantly)
 
 # GRBL
